@@ -19,7 +19,9 @@ import asyncio
 from aiogram.utils import executor
 from datetime import datetime, time
 import json
-
+import sql_checker
+import sql_insert
+import pymysql
 
 
 
@@ -98,26 +100,27 @@ async def process_callback_button(callback_query: types.CallbackQuery, state: FS
     pressed_buttons.add(button)
     await bot.answer_callback_query(callback_query.id, f"Вы нажали кнопку: {button}") #вывод уведомления пользователю о нажатой кнопке
     if button == "Принять":
-        Action(f'{callback_query.from_user.first_name}', f'{callback_query.from_user.id}', "Принял обход", "")
-        markup = InlineKeyboardMarkup(row_width=2)#создание макета инлайн кнопок
-        button1 = InlineKeyboardButton("Готово", callback_data="accept1")#создаем кнопки, вводим название кнопки и ее callback
-        button2 = InlineKeyboardButton("Не получается", callback_data="deny1")
-        markup.add(button1, button2)#добавляем кнопки на макет
-        await bot.edit_message_text(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id,
-                                    text=f"{user_name} принял обход", reply_markup=Chat()) #редактирование сообщения о принятии обхода
-        await bot.send_photo(chat_id=callback_query.from_user.id, photo=r"https://ibb.co/bWKgv8S", caption="1. Включены телевизоры на ресепшене",
-                             reply_markup=markup)#отправка первого пункта чек листа лично пользователю, принявшего обходной лист
+        if sql_checker.Main(callback_query.from_user.id) != "False":
+            Action(f'{callback_query.from_user.first_name}', f'{callback_query.from_user.id}', "Принял обход", "")
+            markup = InlineKeyboardMarkup(row_width=2)#создание макета инлайн кнопок
+            button1 = InlineKeyboardButton("Готово", callback_data="accept1")#создаем кнопки, вводим название кнопки и ее callback
+            button2 = InlineKeyboardButton("Не получается", callback_data="deny1")
+            markup.add(button1, button2)#добавляем кнопки на макет
+            await bot.edit_message_text(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id,
+                                        text=f"{user_name} принял обход", reply_markup=Chat()) #редактирование сообщения о принятии обхода
+            await bot.send_photo(chat_id=callback_query.from_user.id, photo=r"https://ibb.co/bWKgv8S", caption="1. Включены телевизоры на ресепшене",
+                                reply_markup=markup)#отправка первого пункта чек листа лично пользователю, принявшего обходной лист
 
-        with open("nuzhno.txt", "r") as f:#файл nuzhno.txt хранит в себе айди обхода, мессадж_айди в обходной группе(кто принял обход), и последнее сообщение
-            my_data_dict = json.load(f)                                                             #отправленное пользователю (кнопка "завершить обход")
-        my_data_dict["message_id_first"] = callback_query.message.message_id#меняем мессадж_айди
-        with open("nuzhno.txt", "w") as c:
-            json.dump(my_data_dict, c)#записываем мессадж айди
-        with open("data.txt", "w+") as z:#файл data.txt собирает данные о каждом пункте чек листа, чтобы потом переслать в одном сообщении
-            z.write("")
-            z.close()
-        with open("data.txt", "a") as z:
-            z.write(user_name + " принял обход\n")#записываем данные кто принял обход
+            with open("nuzhno.txt", "r") as f:#файл nuzhno.txt хранит в себе айди обхода, мессадж_айди в обходной группе(кто принял обход), и последнее сообщение
+                my_data_dict = json.load(f)                                                             #отправленное пользователю (кнопка "завершить обход")
+            my_data_dict["message_id_first"] = callback_query.message.message_id#меняем мессадж_айди
+            with open("nuzhno.txt", "w") as c:
+                json.dump(my_data_dict, c)#записываем мессадж айди
+            with open("data.txt", "w+") as z:#файл data.txt собирает данные о каждом пункте чек листа, чтобы потом переслать в одном сообщении
+                z.write("")
+                z.close()
+            with open("data.txt", "a") as z:
+                z.write(user_name + " принял обход\n")#записываем данные кто принял обход
 
 
 
