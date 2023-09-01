@@ -96,7 +96,7 @@ async def send_scheduled_message(text):
 async def process_callback_button(callback_query: types.CallbackQuery, state: FSMContext):
     button = callback_query.data #отслеживание нажатой кнопки для уведомления о нажатии пользователю
     #user_id = callback_query.from_user.id
-    user_name = str(callback_query.from_user.first_name) + " " + str(callback_query.from_user.last_name) #сбор имени и фамилии(взяты будут с телеграмма)
+    user_name = sql_checker.User(callback_query.from_user.id)
     pressed_buttons.add(button)
     await bot.answer_callback_query(callback_query.id, f"Вы нажали кнопку: {button}") #вывод уведомления пользователю о нажатой кнопке
     if button == "Принять":
