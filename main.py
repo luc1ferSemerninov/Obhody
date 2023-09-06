@@ -111,7 +111,7 @@ async def process_callback_button(callback_query: types.CallbackQuery, state: FS
     pressed_buttons.add(button)
     await bot.answer_callback_query(callback_query.id, f"Вы нажали кнопку: {button}") #вывод уведомления пользователю о нажатой кнопке
     if button == "Принять":
-        if sql_checker.Main(callback_query.from_user.id) != "False":
+        if sql_checker.Main(callback_query.from_user.id) == True:
             sql_insert.UpdateId("taskId")
             markup = InlineKeyboardMarkup(row_width=2)#создание макета инлайн кнопок
             button1 = InlineKeyboardButton("Готово", callback_data="accept1")#создаем кнопки, вводим название кнопки и ее callback
@@ -122,13 +122,9 @@ async def process_callback_button(callback_query: types.CallbackQuery, state: FS
             Action(sql_checker.User(callback_query.from_user.id,),callback_query.from_user.id, "Принял обход", "")
             await bot.send_photo(chat_id=callback_query.from_user.id, photo=r"https://ibb.co/bWKgv8S", caption="1. Включены телевизоры на ресепшене",
                                 reply_markup=markup)#отправка первого пункта чек листа лично пользователю, принявшего обходной лист
-
             sql_insert.UpdateMesId("messageId_first", callback_query.message.message_id)
-            with open("data.txt", "w+") as z:#файл data.txt собирает данные о каждом пункте чек листа, чтобы потом переслать в одном сообщении
-                z.write("")
-                z.close()
-            with open("data.txt", "a") as z:
-                z.write(user_name + " принял обход\n")#записываем данные кто принял обход
+        else:
+            await bot.send_message(callback_query.from_user.id, "тоби пизда")
 
 
 
