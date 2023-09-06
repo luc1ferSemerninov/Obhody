@@ -111,7 +111,7 @@ async def process_callback_button(callback_query: types.CallbackQuery, state: FS
     pressed_buttons.add(button)
     await bot.answer_callback_query(callback_query.id, f"Вы нажали кнопку: {button}") #вывод уведомления пользователю о нажатой кнопке
     if button == "Принять":
-        if sql_checker.Main(callback_query.from_user.id) == True:
+        if sql_checker.Main(callback_query.from_user.id) == "True":
             sql_insert.UpdateId("taskId")
             markup = InlineKeyboardMarkup(row_width=2)#создание макета инлайн кнопок
             button1 = InlineKeyboardButton("Готово", callback_data="accept1")#создаем кнопки, вводим название кнопки и ее callback
