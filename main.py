@@ -136,6 +136,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Да"
     else:
         d = "Нет"
+        
     task = "Телевизоры на ресепшене"#название первого пункта
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)#удаляем первый пункт в чек листе
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)#отправляем в функцию имя пользователя, айди, задачу и сделал он задачу или нет
@@ -144,8 +145,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
     button2 = InlineKeyboardButton("Не получается", callback_data="deny2")
     markup.add(button1, button2)
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")#отправляем итог первого пункта в data.txt, чтобы потом отправить одним сообщением
+     #отправляем итог первого пункта в data.txt, чтобы потом отправить одним сообщением
     await bot.send_photo(chat_id=callback_query.from_user.id, photo=r"https://ibb.co/NK4qQPD",caption="2. Включены телевизоры и свет возле кассы СРМ",reply_markup=markup)#второй пункт чек листа
 
 
@@ -161,8 +161,7 @@ async def process_message1(callback_query: types.CallbackQuery, state: FSMContex
     task = "СРМ"
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept3")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny3")
@@ -184,8 +183,6 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
     task = "Тронный зал"
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept4")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny4")
@@ -207,8 +204,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
     task = "Приточная система"
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept5")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny5")
@@ -230,8 +226,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
     task = "Вытяжная система"
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept6")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny6")
@@ -254,8 +249,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
     task = "Подсветка за кассой"
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept7")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny7")
@@ -278,8 +272,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
     task ="Телевизоры на третьем"
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept8")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny8")
@@ -302,8 +295,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Да"
     task = "Аркадный автомат"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept9")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny9")
@@ -333,8 +325,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Плейстейшн и джойстики"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept10")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny10")
@@ -370,15 +361,12 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "BrawlStars"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept11")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny11")
     markup.add(button1, button2)
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
-    with open("nuzhno.txt","r") as f:  # файл nuzhno.txt хранит в себе айди обхода, мессадж_айди в обходной группе(кто принял обход), и последнее сообщение
-        my_data_dict = json.load(f)
     await bot.delete_message(callback_query.from_user.id, sql_insert.GetId("messageId")+1)
     await bot.delete_message(callback_query.from_user.id, sql_insert.GetId("messageId")+2)
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)
@@ -399,8 +387,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Fortnite"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept12")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny12")
@@ -421,8 +408,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Левой стена возле Hyper"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept13")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny13")
@@ -444,8 +430,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Hyper"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept14")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny14")
@@ -469,8 +454,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "FirstClass"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept15")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny15")
@@ -504,8 +488,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Gorilla"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept16")#тут создаем особенный callback кнопок, предпоследнего пункта в чеклисте
     button2 = InlineKeyboardButton("Не получается", callback_data="deny16")
@@ -528,8 +511,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "New-York"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept17")#тут создаем особенный callback кнопок, предпоследнего пункта в чеклисте
     button2 = InlineKeyboardButton("Не получается", callback_data="deny17")
@@ -552,8 +534,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Фуршетная зона"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept18")#тут создаем особенный callback кнопок, предпоследнего пункта в чеклисте
     button2 = InlineKeyboardButton("Не получается", callback_data="deny18")
@@ -572,8 +553,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Приточная система 4 этаж"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept19")#тут создаем особенный callback кнопок, предпоследнего пункта в чеклисте
     button2 = InlineKeyboardButton("Не получается", callback_data="deny19")
@@ -593,8 +573,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Вытяжная система 4 этаж"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept20")#тут создаем особенный callback кнопок, предпоследнего пункта в чеклисте
     button2 = InlineKeyboardButton("Не получается", callback_data="deny20")
@@ -615,8 +594,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Ресепшен 4 этаж"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept21")#тут создаем особенный callback кнопок, предпоследнего пункта в чеклисте
     button2 = InlineKeyboardButton("Не получается", callback_data="deny21")
@@ -648,8 +626,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Грин"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept22")#тут создаем особенный callback кнопок, предпоследнего пункта в чеклисте
     button2 = InlineKeyboardButton("Не получается", callback_data="deny22")
@@ -680,8 +657,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Бордо"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept23")#тут создаем особенный callback кнопок, предпоследнего пункта в чеклисте
     button2 = InlineKeyboardButton("Не получается", callback_data="deny23")
@@ -707,8 +683,7 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
         d = "Нет"
     task = "Олимпия"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="acc")#тут создаем особенный callback кнопок, предпоследнего пункта в чеклисте
     button2 = InlineKeyboardButton("Не получается", callback_data="den")
@@ -741,8 +716,7 @@ async def process_message2(callback_query: types.CallbackQuery, state: FSMContex
         d = "Нет"
     task = "Лофт"
     
-    with open("data.txt", "a") as z:
-        z.write(f"{task} - {d}\n")
+     
     markup = InlineKeyboardMarkup(row_width=1)
     button1 = InlineKeyboardButton("Завершить обход", callback_data="Finish")#тут уже у нас будет callback finish, т.к. чеклист кончился, пора закрывать его
     markup.add(button1)
@@ -750,7 +724,7 @@ async def process_message2(callback_query: types.CallbackQuery, state: FSMContex
     await bot.delete_message(callback_query.from_user.id, sql_insert.GetId("messageId")+1)
     await bot.delete_message(callback_query.from_user.id, sql_insert.GetId("messageId")+2)
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)
-    await bot.send_photo(chat_id=callback_query.from_user.id, photo="https://ibb.co/yFWcSqN", caption="Супер! Ты завершил обход", reply_markup=markup)
+    await bot.send_photo(chat_id=callback_query.from_user.id, photo="https://ibb.co.com/Q6xxZgF", caption="Супер! Ты завершил обход", reply_markup=markup)
     sql_insert.UpdateMesId("messageId1", callback_query.message.message_id)
 
 
@@ -760,9 +734,6 @@ async def process_message2(callback_query: types.CallbackQuery, state: FSMContex
 async def process_message2(callback_query: types.CallbackQuery, state: FSMContext):
     sql_insert.UpdateId("taskId")
     await bot.answer_callback_query(callback_query.id, f"Вы нажали кнопку: {callback_query.data}")
-    with open("data.txt", "r") as z:
-        z = z.read() #считываем полностью файл о логах чек листа, кто что сделал и не сделал
-    await bot.send_message(654331925, z) #Отправка отчета по обходу
     now = datetime.now()
     await bot.delete_message(callback_query.from_user.id, sql_insert.GetId("messageId1")+1)#удаляем последнее сообщение в личной переписке с ботом
     await bot.edit_message_text(chat_id=chatID, message_id=sql_insert.GetId("messageId_first"),
@@ -772,37 +743,6 @@ async def process_message2(callback_query: types.CallbackQuery, state: FSMContex
     Action(f'{callback_query.from_user.first_name}', f"{callback_query.from_user.id}", f"{task}", "")
     sql_insert.UpdateId("DailyTaskId")
 
-
-
-
-def Worksheet(date, time, who, userId, action, idAction):
-    # Путь к вашему JSON-ключу
-    json_keyfile = r'mamapapa1.json'
-
-    # Создание области видимости
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets",
-             "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-
-    # Загрузка JSON-ключа и создание учетных данных
-    creds = Credentials.from_service_account_file(json_keyfile, scopes=scope)
-
-    # Подключение к Google Sheets API
-    gc = gspread.authorize(creds)
-
-    # Открываем таблицу по URL или названию
-    # Если у вас URL, то выглядит так: https://docs.google.com/spreadsheets/d/your-sheet-id/edit
-    spreadsheet = gc.open_by_url(r'https://docs.google.com/spreadsheets/d/1Vyp3saWe09_HcTVAp_l-Vm8Kcy9ny2xFYddQbfod92w/edit#gid=0')
-
-    # Получаем доступ к нужному листу
-    worksheet = spreadsheet.get_worksheet(0)
-
-
-    # Запись данных
-    with open("nuzhno.txt", "r") as f:
-        my_data_dict = json.load(f)#считываем файл, чтобы достать из него айди обхода
-    id = my_data_dict["id"]
-    allMessage = [f'{date}', f'{time}', f'{who}', f'{userId}', f'{action}', f"{id}", "Утренний обход", f'{idAction}']#записываем все нужные данные в массив
-    
 
 
 
