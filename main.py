@@ -161,7 +161,7 @@ async def process_message1(callback_query: types.CallbackQuery, state: FSMContex
     task = "СРМ"
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)
-     
+    
     markup = InlineKeyboardMarkup(row_width=2)
     button1 = InlineKeyboardButton("Готово", callback_data="accept3")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny3")
@@ -187,7 +187,6 @@ async def process_message(callback_query: types.CallbackQuery, state: FSMContext
     button1 = InlineKeyboardButton("Готово", callback_data="accept4")
     button2 = InlineKeyboardButton("Не получается", callback_data="deny4")
     markup.add(button1, button2)
-    
     await bot.send_photo(chat_id=callback_query.from_user.id, photo=r"https://ibb.co.com/qDnc0GR",caption="4. Включена приточная система на цоколе",reply_markup=markup)
 
 

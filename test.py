@@ -22,6 +22,7 @@ import json
 import sql_checker
 import sql_insert
 import pymysql
+import taskSql
 
 
 
@@ -114,8 +115,8 @@ async def process_callback_button(callback_query: types.CallbackQuery, state: FS
         if sql_checker.Main(callback_query.from_user.id) == "True":
             sql_insert.UpdateId("taskId")
             markup = InlineKeyboardMarkup(row_width=2)#создание макета инлайн кнопок
-            button1 = InlineKeyboardButton("Готово", callback_data="accept1")#создаем кнопки, вводим название кнопки и ее callback
-            button2 = InlineKeyboardButton("Не получается", callback_data="deny1")
+            button1 = InlineKeyboardButton("Готово", callback_data=f"accept{taskSql.Otdelno()}")#создаем кнопки, вводим название кнопки и ее callback
+            button2 = InlineKeyboardButton("Не получается", callback_data=f"deny{taskSql.Otdelno()}")
             markup.add(button1, button2)#добавляем кнопки на макет
             await bot.edit_message_text(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id,
                                         text=f"{user_name} принял обход", reply_markup=Chat()) #редактирование сообщения о принятии обхода
@@ -126,27 +127,34 @@ async def process_callback_button(callback_query: types.CallbackQuery, state: FS
         else:
             await bot.send_message(callback_query.from_user.id, "тоби пизда")
 
-
-
-@dp.callback_query_handler(lambda query: query.data in {"accept1", "deny1"})#код будет выполняться только в том случае, если callback был accept1 или deny1
+    
+@dp.callback_query_handler(lambda query: query.data in {f"accept{taskSql.Otdelno()}", f"deny{taskSql.Otdelno()}"})#код будет выполняться только в том случае, если callback был accept1 или deny1
 async def process_message(callback_query: types.CallbackQuery, state: FSMContext):
+    
+    kall = list(taskSql.Main(str(taskSql.Otdelno())))
     sql_insert.UpdateId("taskId")
     await bot.answer_callback_query(callback_query.id, f"Вы нажали кнопку: {callback_query.data}")
-    if callback_query.data == "accept1":
+    if callback_query.data == f"accept{taskSql.Otdelno()}":
         d = "Да"
+        sql_insert.UpdateId("idCheck")
     else:
         d = "Нет"
-        
-    task = "Телевизоры на ресепшене"#название первого пункта
-    await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)#удаляем первый пункт в чек листе
-    Action(callback_query.from_user.first_name, callback_query.from_user.id, task, d)#отправляем в функцию имя пользователя, айди, задачу и сделал он задачу или нет
+        sql_insert.UpdateId("idCheck")
+    all = []
+    for item in kall:
+        all.append(item)
+    task_id = all[0]
+    task_name = all[1]
+    task_full = all[2]
+    task_img = all[3]
+
+    Action(callback_query.from_user.first_name, callback_query.from_user.id, task_name, d)#отправляем в функцию имя пользователя, айди, задачу и сделал он задачу или нет
     markup = InlineKeyboardMarkup(row_width=2)
-    button1 = InlineKeyboardButton("Готово", callback_data="accept2")
-    button2 = InlineKeyboardButton("Не получается", callback_data="deny2")
+    button1 = InlineKeyboardButton("Готово", callback_data=f"accept{taskSql.Otdelno()}")
+    button2 = InlineKeyboardButton("Не получается", callback_data=f"deny{taskSql.Otdelno()}")
     markup.add(button1, button2)
-    
-     #отправляем итог первого пункта в data.txt, чтобы потом отправить одним сообщением
-    await bot.send_photo(chat_id=callback_query.from_user.id, photo=r"https://ibb.co/NK4qQPD",caption="2. Включены телевизоры и свет возле кассы СРМ",reply_markup=markup)#второй пункт чек листа
+    #отправляем итог первого пункта в data.txt, чтобы потом отправить одним сообщением
+    await bot.send_photo(chat_id=654331925, photo=f"{task_img}",caption=f"{task_id}. {task_full}",reply_markup=markup)#второй пункт чек листа
 
 
 
