@@ -1,55 +1,17 @@
-import time, subprocess
-import gspread
-from google.oauth2.service_account import Credentials
-import aiogram.types
-import aiogram.utils.markdown as md
+import time
 from aiogram import Bot, Dispatcher, executor, types
 
-from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, \
+from aiogram.types import InlineKeyboardMarkup, \
     InlineKeyboardButton
-import telebot
-import re
 from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
 import asyncio
-import numpy as np
-import logging
-import asyncio
 from aiogram.utils import executor
 from datetime import datetime, time
-import json
 import sql_checker
 import sql_insert
-import pymysql
 import taskSql
-
-
-
-
-def Check():
-    markup = InlineKeyboardMarkup(row_width=2)
-    button1 = InlineKeyboardButton("Готово", callback_data="Готово")
-    button2 = InlineKeyboardButton("Не получается", callback_data="Не получается")
-    markup.add(button1, button2)
-
-    return markup
-
-
-def Chat():
-    markup = InlineKeyboardMarkup(row_width=1)
-
-    # Добавляем кнопки, каждая со своим уникальным идентификатором
-    button1 = InlineKeyboardButton("Перейти в чат", url="https://t.me/@next_detour_bot", callback_data="Перейти в чат")
-    markup.add(button1)
-
-    return markup
-
-
-#def SendLog(text):
-    #bot = telebot.TeleBot(telegram_bot_api_key)
-    #bot.send_message(-729345297, text)
-
 
 keyApi = "AIzaSyAeQxJTUyhUvhkKbiQqcXplBVZf0zIQ8No"
 pressed_buttons = set()
@@ -59,16 +21,16 @@ telegram_bot_api_key = API_TOKEN
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot, storage=storage)
 chatID = -854534644
-message_id = 0
+class status(StatesGroup):
+    denied = State()
 
-def Action(name, userId, action, idAction): #функция которая собирает данные об обходе и передает другой функции чтобы записать в таблицу
+array = taskSql.MainAll()
+for i in array:
+    x = i[0]
+print(x)
+
+def Action(userId, action, idAction): #функция которая собирает данные об обходе и передает другой функции чтобы записать в таблицу
     now = datetime.now()
-    #Worksheet(f'{str(now.date())}',f'{now.strftime("%H:%M")}',#передача даты и времени на таблицу
-            #  f'{name}',#передача имени заполняющего
-           #       f'{userId}',#передача айди на таблицу
-           #   f'{action}',#передача названия пункта в чек листе
-           #   f'{idAction}')#сделал он этот пункт или нет
-    
     sql_insert.Main(f'{now.strftime("%Y-%m-%d")}', 
                     f'{now.strftime("%H:%M")}', 
                     f'{sql_checker.User(userId)}', 
@@ -79,10 +41,7 @@ def Action(name, userId, action, idAction): #функция которая со�
                     f'{"Утренний обход"}', 
                     f'{idAction}', 
                     comm="")
-
-
-
-
+    
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
     await message.reply("Привет! На данный момент обходов нет :)")
@@ -90,9 +49,7 @@ async def start_command(message: types.Message):
 
 @dp.message_handler(content_types=['text'])
 async def blabla(message, state: FSMContext):
-    await bot.send_message(654331925, f'{message.from_user.username}: {message.text}')#это нужно для логов
-    Action(message.from_user.first_name, message.from_user.id, "Написал комментарий", f'{message.text}')#отправка комментария пользователя
-
+    print(123123)
 
 async def send_scheduled_message(text):
     markup = InlineKeyboardMarkup(row_width=1)
@@ -103,61 +60,69 @@ async def send_scheduled_message(text):
 
     await bot.send_message(chatID, text=text, reply_markup=markup)#отправляем наше оповещение в общий чат
 
-
 @dp.callback_query_handler(lambda query: query.data in {"Принять"})
 async def process_callback_button(callback_query: types.CallbackQuery, state: FSMContext):
-    button = callback_query.data #отслеживание нажатой кнопки для уведомления о нажатии пользователю
-    #user_id = callback_query.from_user.id
-    user_name = sql_checker.User(callback_query.from_user.id)
-    pressed_buttons.add(button)
-    await bot.answer_callback_query(callback_query.id, f"Вы нажали кнопку: {button}") #вывод уведомления пользователю о нажатой кнопке
-    if button == "Принять":
-        if sql_checker.Main(callback_query.from_user.id) == "True":
-            sql_insert.UpdateId("taskId")
-            markup = InlineKeyboardMarkup(row_width=2)#создание макета инлайн кнопок
-            button1 = InlineKeyboardButton("Готово", callback_data=f"accept{taskSql.Otdelno()}")#создаем кнопки, вводим название кнопки и ее callback
-            button2 = InlineKeyboardButton("Не получается", callback_data=f"deny{taskSql.Otdelno()}")
-            markup.add(button1, button2)#добавляем кнопки на макет
-            await bot.edit_message_text(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id,
-                                        text=f"{user_name} принял обход", reply_markup=Chat()) #редактирование сообщения о принятии обхода
-            Action(sql_checker.User(callback_query.from_user.id,),callback_query.from_user.id, "Принял обход", "")
-            await bot.send_photo(chat_id=callback_query.from_user.id, photo=r"https://ibb.co/bWKgv8S", caption="1. Включены телевизоры на ресепшене",
-                                reply_markup=markup)#отправка первого пункта чек листа лично пользователю, принявшего обходной лист
-            sql_insert.UpdateMesId("messageId_first", callback_query.message.message_id)
-        else:
-            await bot.send_message(callback_query.from_user.id, "тоби пизда")
-
-    
-@dp.callback_query_handler(lambda query: query.data in {f"accept{taskSql.Otdelno()}", f"deny{taskSql.Otdelno()}"})#код будет выполняться только в том случае, если callback был accept1 или deny1
-async def process_message(callback_query: types.CallbackQuery, state: FSMContext):
-    
-    kall = list(taskSql.Main(str(taskSql.Otdelno())))
+    now = datetime.now()
     sql_insert.UpdateId("taskId")
-    await bot.answer_callback_query(callback_query.id, f"Вы нажали кнопку: {callback_query.data}")
-    if callback_query.data == f"accept{taskSql.Otdelno()}":
-        d = "Да"
-        sql_insert.UpdateId("idCheck")
+    sql_insert.UpdateMesId("idCheck", "1")
+    sql_insert.UpdateId("DailyTaskId")
+    user = sql_checker.User(callback_query.from_user.id)
+    await bot.edit_message_text(chat_id=chatID, message_id=callback_query.message.message_id, text=f"{user} принял обход в {now.strftime('%H:%M')}")
+    sql_insert.UpdateMesId("messageId_first", callback_query.message.message_id)
+    Action(callback_query.from_user.id, action="Принял обход", idAction="")
+    sql_insert.UpdateId("taskId")
+    await Next(callback_query.from_user.id)
+    
+async def Next(user):
+    if sql_insert.GetId("idCheck") == x+1:
+        await Final(user)
     else:
-        d = "Нет"
-        sql_insert.UpdateId("idCheck")
-    all = []
-    for item in kall:
-        all.append(item)
-    task_id = all[0]
-    task_name = all[1]
-    task_full = all[2]
-    task_img = all[3]
+        arr = taskSql.Main(taskSql.Otdelno())
+        print(arr)
+        task_id = arr[0]
+        task_mini = arr[1]
+        task_full = arr[2]
+        task_img = arr[3]
 
-    Action(callback_query.from_user.first_name, callback_query.from_user.id, task_name, d)#отправляем в функцию имя пользователя, айди, задачу и сделал он задачу или нет
-    markup = InlineKeyboardMarkup(row_width=2)
-    button1 = InlineKeyboardButton("Готово", callback_data=f"accept{taskSql.Otdelno()}")
-    button2 = InlineKeyboardButton("Не получается", callback_data=f"deny{taskSql.Otdelno()}")
-    markup.add(button1, button2)
-    #отправляем итог первого пункта в data.txt, чтобы потом отправить одним сообщением
-    await bot.send_photo(chat_id=654331925, photo=f"{task_img}",caption=f"{task_id}. {task_full}",reply_markup=markup)#второй пункт чек листа
+        markup = InlineKeyboardMarkup(row_width=2)
+        button1 = InlineKeyboardButton("Готово", callback_data="accept")
+        button2 = InlineKeyboardButton("Не получается", callback_data="deny")
+        markup.add(button1, button2)
 
+        await bot.send_photo(user, photo=task_img[0], caption=task_full[0], reply_markup=markup)
+        Action(user, task_mini[0], "")
 
+@dp.callback_query_handler(lambda query: query.data in {"accept"})
+async def process_callback_button(callback_query: types.CallbackQuery, state: FSMContext):
+    await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
+    sql_insert.Tasker("Да", sql_insert.GetId("taskId"))
+    sql_insert.UpdateId("taskId")
+    sql_insert.UpdateId("idCheck")
+    await Next(callback_query.from_user.id)
 
+@dp.callback_query_handler(lambda query: query.data in {"deny"})
+async def process_callback_button(callback_query: types.CallbackQuery, state: FSMContext):
+    await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
+    sql_insert.Tasker("Нет", sql_insert.GetId("taskId"))
+    sql_insert.UpdateId("taskId")
+    sql_insert.UpdateId("idCheck")
+    await bot.send_message(chat_id=callback_query.from_user.id, text="В чем проблема?")
+    await status.denied.set()
+
+@dp.message_handler(state=status.denied)
+async def process_message(message: types.Message, state: FSMContext):
+    sql_insert.TaskUpdate(message.text, sql_insert.GetId("taskId")-1)
+    await bot.delete_message(message.from_user.id, message_id=message.message_id-1)
+    await bot.delete_message(message.from_user.id, message_id=message.message_id)
+    await state.finish()
+    await Next(message.from_user.id)
+
+async def Final(user):
+    now = datetime.now()
+    await bot.send_message(user, "Спасибо, Вы завершили обход!")
+    Action(user, "Завершил обход", "")
+    person = sql_checker.User(user)
+    await bot.edit_message_text(chat_id=chatID, message_id=sql_insert.GetId("messageId_first"), text=f"{person} завершил обход в {now.strftime('%H:%M')}")
 
 async def send_message_at_specific_time(hour, minute, text):
     while True:
@@ -167,7 +132,6 @@ async def send_message_at_specific_time(hour, minute, text):
         if now.hour == now.hour and now.minute == now.minute:
             await send_scheduled_message(text)# отправляем наш текст о приходе чеклиста
         await asyncio.sleep(24234234)  # Подождать минуту перед следующей проверкой
-
 
 loop = asyncio.get_event_loop()#лупим наш код
 loop.create_task(send_message_at_specific_time(hour=9, minute=50, text="Пупупу, пришел новый обход"))#отправляем наш обход(время, когда должен прийти чеклист, текст для оповещения)

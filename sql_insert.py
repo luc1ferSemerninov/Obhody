@@ -211,3 +211,59 @@ def GetActionId():
         # Закрытие соединения
         connection.close()
     return result
+
+
+
+def TaskUpdate(msg, idTask):
+     # Данные для внесения
+
+    try:
+        # Установление соединения с базой данных
+        connection = pymysql.connect(**db_config)
+
+        with connection.cursor() as cursor:
+            get_query = f"""
+            UPDATE `task_oper` SET `Comment`='{msg}' WHERE `TaskId` = {idTask}
+            """
+
+            cursor.execute(get_query)
+            print("Данные успешно внесены в таблицу task_oper.")
+            connection.commit()
+    except Exception as e:
+        return False
+
+    finally:
+        # Закрытие соединения
+        connection.close()
+
+
+def Tasker(Result, taskId):
+    # Параметры подключения к базе данных
+
+
+    # Данные для внесения
+
+    try:
+        # Установление соединения с базой данных
+        connection = pymysql.connect(**db_config)
+
+        with connection.cursor() as cursor:
+            insert_query = f"""
+                UPDATE task_oper
+                SET `Result` = '{Result}'
+                WHERE `TaskId` = '{taskId}'
+            """
+            # Вставка данных в таблицу
+            cursor.execute(insert_query)
+
+            # Подтверждение изменений
+            connection.commit()
+
+
+
+    except Exception as e:
+        print("Произошла ошибка:", e)
+
+    finally:
+        # Закрытие соединения
+        connection.close()
